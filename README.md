@@ -1,7 +1,14 @@
-# Speden Spelit Arduino-peli
+# Speden Spelit Arduino-game
 
 ## Project Overview
-Tähän tulee projektin lyhyt esittely. Kuvaa, mitä peli tekee, mikä sen tarkoitus on, ja miksi se on kehitetty.
+
+In this project, we are recreating the classic Finnish reaction game from the TV show **"Speden Spelit."** This nostalgic game tests players' reaction times and memory by lighting up an LED in a random sequence. Players must then press the corresponding button to match the light.
+
+As gameplay progresses, the challenge intensifies with increasing speed, making it harder to keep up and score points. The current score is displayed on 7-segment displays, providing real-time feedback on performance.
+
+This project is part of our school microcontroller course, where we apply our knowledge in a hands-on manner. The key components include buttons, LEDs, 7-segment displays, and game logic, all seamlessly controlled by an Arduino microcontroller. 
+
+Through this project, we have learned about integrating hardware and software while developing our programming skills.
 
 ## Table of Contents
 - [Features](#features)
@@ -13,7 +20,12 @@ Tähän tulee projektin lyhyt esittely. Kuvaa, mitä peli tekee, mikä sen tarko
 - [Authors](#authors)
 
 ## Features
-Tähän osioon lisätään projektin toiminnallisuudet ja tärkeimmät ominaisuudet.
+
+- **4 Buttons**: For user controls.
+- **4 LED Lights**: Lights to indicate the next button to press.
+- **7-Segment Displays**: To show the current score and/or high score.
+- **Interrupt-Driven Logic**: Buttons and timers utilize interrupts.
+- **Difficulty Change**: The speed of LEDs increases as the game progresses.
 
 ## Hardware Requirements
 To replicate this project, you will need the following components:
