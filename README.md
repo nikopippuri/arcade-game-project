@@ -43,7 +43,13 @@ Lyhyet ohjeet pelin käyttämiseen lisätään tähän.
 Tähän voit kuvata projektin kansiorakenteen.
 
 ## Kytkentäkaaviot
-Tähän osioon lisätään kytkentäkaaviot ja niiden selitykset.
+
+Tässä on kytkentäkaavio Tinkercadissa:
+
+![Kytkentäkaavio Tinkercadissa](Images/circuit_tinkercad.png)
+
+Voit myös ladata yksityiskohtaisen kytkentäkaavion PDF-muodossa [tästä linkistä](Images/circuit_diagram.pdf).
+
 
 ## Flowchartit
 Tähän osioon lisätään projektin flowchartit, jotka selittävät pelin toiminnallisuuden ja logiikan.
