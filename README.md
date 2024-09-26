@@ -8,21 +8,26 @@ Tähän tulee projektin lyhyt esittely. Kuvaa, mitä peli tekee, mikä sen tarko
 - [Hardware Requirements](#hardware-requirements)
 - [Software Requirements](#software-requirements)
 - [Setup](#setup)
-- [Kytkentäkaaviot](#kytkentäkaaviot)
-- [Flowchartit](#flowchartit)
+- [Circuit Diagrams](#circuit-diagrams)
+- [Flowcharts](#flowcharts)
 - [Authors](#authors)
 
 ## Features
 Tähän osioon lisätään projektin toiminnallisuudet ja tärkeimmät ominaisuudet.
 
 ## Hardware Requirements
-Projektissa käytettävät komponentit:
-- Painikkeet
-- LEDit
-- 7-segmenttinäytöt
+To replicate this project, you will need the following components:
+
+- 1 x Arduino (Uno or compatible)
+- 4 x Push Buttons
+- 4 x LEDs
+- 2 x 74HC595 Serial-to-Parallel Shift Registers
+- 2 x 7-Segment Displays
+- Resistors and wires
+- Breadboard
 
 ## Software Requirements
-Projektissa käytettävä ohjelmisto:
+
 - Arduino IDE
 - Tinkercad
 
@@ -42,16 +47,15 @@ Lyhyet ohjeet pelin käyttämiseen lisätään tähän.
 ## Kansiomalli
 Tähän voit kuvata projektin kansiorakenteen.
 
-## Kytkentäkaaviot
+## Circuit Diagrams
 
-Tässä on kytkentäkaavio Tinkercadissa:
+Here is the circuit diagram in Tinkercad:
 
-![Kytkentäkaavio Tinkercadissa](Images/circuit_tinkercad.png)
+![Circuit diagram in Tinkercad](Images/circuit_tinkercad.png)
 
-Voit myös ladata yksityiskohtaisen kytkentäkaavion PDF-muodossa [tästä linkistä](Images/circuit_diagram.pdf).
+You can also download a detailed circuit diagram in PDF format [from this link](Images/circuit_diagram.pdf).
 
-
-## Flowchartit
+## Flowcharts
 Tähän osioon lisätään projektin flowchartit, jotka selittävät pelin toiminnallisuuden ja logiikan.
 
 ## Authors
