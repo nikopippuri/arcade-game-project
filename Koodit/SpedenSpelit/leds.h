@@ -7,7 +7,15 @@
   to be used as outputs. Speden Spelit leds are connected to those
   pins.  
 */
-void initializeLeds();
+
+volatile int viive = 500;
+
+void initializeLeds() {
+  pinMode(5, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(2, OUTPUT);
+};
 
 /*
   setLed(byte) sets correct led number given as 0,1,2 or 3
@@ -18,24 +26,133 @@ void initializeLeds();
   
   parameters:
   byte ledNumber is 0,1,2 or 3
+
+
 */
-void setLed(byte ledNumber);
+void setLed(byte ledNumber) {
+  if (ledNumber == 0) {
+    digitalWrite(5, HIGH);
+  }
+  else if (ledNumber == 1){
+    digitalWrite(4, HIGH);
+  }
+  else if (ledNumber == 2){
+    digitalWrite(3, HIGH);
+  }
+  else if (ledNumber == 3){
+    digitalWrite(2, HIGH);
+  }
+};
 
 /*
   clearAllLeds(void) subroutine clears all leds
 */
-void clearAllLeds(void);
+void clearAllLeds(void) {
+  for(int i=2; i<=5; i++){
+    digitalWrite(i, LOW);
+  }
+};
 
 /*
   setAllLeds subroutine sets all leds
 */
-void setAllLeds(void);
+
+// KAIKILLE OMAT VASTUKSET
+
+
+void setAllLeds(void) {
+  for(int i=2; i<=5; i++){
+    digitalWrite(i, HIGH);
+  }
+};;
 
 /*
   show1() subroutine shows numbers 0,1,...,15 as binary numbers
   waits a bit and repeats number "show"
 */
-void show1(void);
+void show1(void){
+  clearAllLeds();   // 0
+  delay(500);
+  digitalWrite(2, HIGH); // 1
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(3, HIGH); // 2
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(2, HIGH); // 1
+  digitalWrite(3, HIGH); // 2
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(4, HIGH); // 4
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(2, HIGH); // 1
+  digitalWrite(4, HIGH); // 4
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(3, HIGH); // 2
+  digitalWrite(4, HIGH); // 4
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(2, HIGH); // 1
+  digitalWrite(3, HIGH); // 2
+  digitalWrite(4, HIGH); // 4
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(5, HIGH); // 8
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(2, HIGH); // 1
+  digitalWrite(5, HIGH); // 8
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(3, HIGH); // 2
+  digitalWrite(5, HIGH); // 8
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(2, HIGH); // 1 
+  digitalWrite(3, HIGH); // 2
+  digitalWrite(5, HIGH); // 8
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(4, HIGH); // 4
+  digitalWrite(5, HIGH); // 8
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(2, HIGH); // 1 
+  digitalWrite(4, HIGH); // 4
+  digitalWrite(5, HIGH); // 8
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(2, HIGH); // 1 
+  digitalWrite(4, HIGH); // 4
+  digitalWrite(5, HIGH); // 8
+  delay(500);
+
+  clearAllLeds();
+  digitalWrite(3, HIGH); // 2 
+  digitalWrite(4, HIGH); // 4
+  digitalWrite(5, HIGH); // 8
+  delay(500);
+
+  clearAllLeds();
+  setAllLeds(); // kaikki palaa = 15
+  delay(500);
+
+};
 
 /*
   show2(int) subroutine shows leds 0,1,2,3,0,1,2,3,.... with increasing
@@ -46,6 +163,31 @@ void show1(void);
   int rounds: This parameter determines how many times 0,1,2,3 sequence
               is shown. 
 */
-void show2(int);
+void show2(int rounds){	
+  for (int i=0; i < rounds; i++)
+    
+    
+  clearAllLeds();
+  digitalWrite(5, HIGH); //
+  delay(viive);
+
+  clearAllLeds();
+  digitalWrite(4, HIGH); //
+  delay(viive); 
+
+  clearAllLeds();
+  digitalWrite(3, HIGH); //
+  delay(viive);
+
+  clearAllLeds();
+  digitalWrite(2, HIGH); //
+  delay(viive);
+  
+ if (viive > 50) {
+            viive = viive - 50;
+        }
+
+
+};
 
 #endif
