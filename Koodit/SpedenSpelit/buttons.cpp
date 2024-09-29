@@ -46,7 +46,7 @@ ISR(PCINT1_vect) {
 
          pcint1PinLow = 0; // Nollataan arvo, jotta voidaan käsitellä seuraava keskeytys
 
-
+  }
 }
 
 
