@@ -2,6 +2,7 @@
 
 
 volatile int pcint1PinLow = 0;  
+volatile bool timeToCheckGameStatus = false; 
 
 void initButtonsAndButtonInterrupts(void)
 {
@@ -38,7 +39,7 @@ ISR(PCINT1_vect) {
 
             // LISÄÄ SAMALLA KYSEINEN LUKU painetut_nappulat[painetut_indeksi] taulukkoon??
 
-          timeToCheckGameStatus = True;
+          timeToCheckGameStatus = true;
 
             break; // Lopetetaan, kun ensimmäinen LOW-pinni on löydetty
         }
