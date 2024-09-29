@@ -10,18 +10,20 @@
   
 */
 void initializeTimer(){
-   TCCR1A = 0;   //VGM 11 ja VGM10 bitit nollaksi
-   TCCR1B = 00001011;   // prescaler  
-   OCR1A  = 250000;    // -> keskeytys, kun saavuttaa arvon 250000 = vertailuarvo
-   TIMSK1 = 00000010; // enabloidaan vertailu keskeytykset
-  interrupts();  //enabloidaan globaalit keskeytykset
+   TCCR1A = 0;             // nollataan rekisterit
+   TCCR1B = 0b00001101;    // CTC tila ja prescaler
+   OCR1A  = 15624;         // vertailuarvo
+   TIMSK1 = 0b00000010;    // enabloidaan vertailu keskeytykset
+  interrupts();            // enabloidaan globaalit keskeytykset
 }
 
 
 void initializeTimer();
 // Intoduce TIMER1_COMPA_vect Interrupt SeRvice (ISR) function for timer.
-ISR(TIMER1_COMPA_vect);  /* keskeytyspalvelia   ISR = interupServiceRoutine   tähän hypätään, kun timerilta tulee keskeytys --> ocr1A saavuttaa arvon 250000 
-Suorittaa alla olevan ohjelma ja palaaa suorittamaan missä olikin. keskeytys tulee ja uusi luku arvotaan -> ledi syttyy*/
+ISR(TIMER1_COMPA_vect);  //keskeytys tulee 1s välein timerilta ja keskeytyspalvelimella arvotaan luku randomNumbers alkioon ja vastaava ledi syttyy  
+
+[randomNumbers] random(0, 4)
+
 
 
 /*
