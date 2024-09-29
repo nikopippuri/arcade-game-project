@@ -18,7 +18,7 @@
 */
 void initButtonsAndButtonInterrupts(void);
 
-void mika_nappi_painettiin();
+
 
 // Intoduce PCINT1_vect Interrupt SeRvice (ISR) function for Pin Change Interrupt.
 ISR(PCINT1_vect); 
