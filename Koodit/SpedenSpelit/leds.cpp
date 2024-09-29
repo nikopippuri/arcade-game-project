@@ -9,6 +9,7 @@
 */
 
 volatile int viive = 500;
+int ledi_valon_kesto = 500;
 
 void initializeLeds() {
   pinMode(5, OUTPUT);
@@ -30,17 +31,27 @@ void initializeLeds() {
 
 */
 void setLed(byte ledNumber) {
+  clearAllLeds();
+  
   if (ledNumber == 0) {
     digitalWrite(5, HIGH);
+    delay(ledi_valon_kesto);
+    clearAllLeds();
   }
   else if (ledNumber == 1){
     digitalWrite(4, HIGH);
+    delay(ledi_valon_kesto);
+    clearAllLeds();
   }
   else if (ledNumber == 2){
     digitalWrite(3, HIGH);
+    delay(ledi_valon_kesto);
+    clearAllLeds();
   }
   else if (ledNumber == 3){
     digitalWrite(2, HIGH);
+    delay(ledi_valon_kesto);
+    clearAllLeds();
   }
 };
 
