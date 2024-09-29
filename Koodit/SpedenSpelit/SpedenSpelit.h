@@ -7,7 +7,6 @@
 /*
   initializeTimer() subroutine intializes Arduino Timer1 module to
   give interrupts at rate 1Hz
-  
 */
 void initializeTimer(){
    TCCR1A = 0;             // nollataan rekisterit
@@ -18,24 +17,27 @@ void initializeTimer(){
 }
 
 
+byte randomNumbers[100];  //Määritetään arvotut luvut taulukko   Arpominen tapahtuu Timer1:n keskeytyspalvelijassa
+int currentIndex = 0; // Määritetään, että ensimmäinen arvottu luku tulee oikeaan paikkaan
+
 void initializeTimer();
 // Intoduce TIMER1_COMPA_vect Interrupt SeRvice (ISR) function for timer.
-ISR(TIMER1_COMPA_vect);  //keskeytys tulee 1s välein timerilta ja keskeytyspalvelimella arvotaan luku randomNumbers alkioon ja vastaava ledi syttyy  
+ISR(TIMER1_COMPA_vect); { //keskeytys tulee 1s välein timerilta ja keskeytyspalvelimella arvotaan luku randomNumbers alkioon ja vastaava ledi syttyy  
 
-[randomNumbers] random(0, 4)
+  byte randomValue =random(0,4);  //arvoo numeron 0,1,2,3 ja sijoittaa sen randomValue
+  randomNumbers[currentIndex]= randomValue;
+  currentIndex++;
+  //saatu random luvun tulisi sytyttää vastaava ledi
+}
 
-
+//byte userNumbers[100]; //painetut napit talletetaan näppäinten keskeytyspalvelijassa
 
 /*
   initializeGame() subroutine is used to initialize all variables
   needed to store random numbers and player button push data.
   This function is called from startTheGame() function.
-  
 */
 void initializeGame();
-
-string randomNumbers[100];  //Arvotut luvut     Arpominen tapahtuu Timer1:n keskeytyspalvelijassa
-string userNumbers[100]; //painetut napit   talletetaan näppäinten keskeytyspalvelijassa
 
 
 /*
@@ -50,14 +52,14 @@ string userNumbers[100]; //painetut napit   talletetaan näppäinten keskeytyspa
   byte lastButtonPress of the player 0 or 1 or 2 or 3
   
 */
-void checkGame(byte);  //ottaa parametrit "byte"
+void checkGame(byte);  
 
    if(userNumbers != randomNumbers) {
 
      stopTheGame();  //peli päättyy
 
       } else {
-          showResults();  // lisataanpiste ja peli jatkuu
+          showResults();  // Jos taulukoiden alkiot ovat samat, peli jatkuu ja pelin tilanne näytetään showResults aliohjelmalla
 }
 
 
@@ -68,7 +70,7 @@ void checkGame(byte);  //ottaa parametrit "byte"
 void stopTheGame() {
     TCCR1B = 0;  //pysäyttää timerin laskennan
     TIMSK1 &= ~(1 << OCR1A);   //shift rekister left = disabloi keskeytykset. 
-    showResults();  //Kutsuu funktiota missä näytetään lopputulos jne..
+    
 }
 
 
