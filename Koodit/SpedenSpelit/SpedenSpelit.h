@@ -7,8 +7,8 @@
 byte userNumbers[100]; //painetut napit talletetaan näppäinten keskeytyspalvelijassa
 byte randomNumbers[100];  //Määritetään arvotut luvut taulukko   Arpominen tapahtuu Timer1:n keskeytyspalvelijassa
 int currentIndex = 0; // Määritetään, että ensimmäinen arvottu luku tulee oikeaan paikkaan
-int drawCount = 0;
-int timerSpeed = 15624;
+int drawCount = 0; //Arvontojen määrän laskuri pelin nopeuttamista varten
+int timerSpeed = 15624; 
 
 /*
   initializeTimer() subroutine intializes Arduino Timer1 module to
@@ -29,20 +29,20 @@ ISR(TIMER1_COMPA_vect) { //keskeytys tulee 1s välein timerilta ja keskeytyspalv
 
   byte randomValue =random(0,4);  //arpoo numeron 0,1,2,3 
   setLed(randomValue); //saatu random luvun tulisi sytyttää vastaava ledi 
-  randomNumbers[currentIndex]= randomValue;
-  currentIndex++ ;
-  drawCount++ ; 
+  randomNumbers[currentIndex] = randomValue; //sijoittaa arvotun luvun taulukkoon 
+  currentIndex++ ;  //kasvattaa taulukon indeksiä
+  drawCount++ ;     // kasvattaa pelin nopeudenlaskuria 
 
-     if(drawCount == 10) {
-       drawCount = 0;
+     if(drawCount == 10) {    // jos laskuri 10, niin nopeutetaan timeria antamaan keskeytyksiä 10% nopeammin
+       drawCount = 0;      // nollataan nopeuslaskuri
        moreSpeed();
 
    }
 }
 
 void moreSpeed() {
-  timerSpeed = timerSpeed * 0.9;
-  OCR1A  = timerSpeed;
+  timerSpeed = timerSpeed * 0.9;  // kertoo timerin arvon  -> koska timer saavuttaa uuden pienemmän arvon nopeammin vauhti kiihtyy 
+  OCR1A  = timerSpeed; // Määritetään timerille uusin arvo 
 }
 
 
@@ -117,3 +117,4 @@ void startTheGame() {
    InitializeGame();
 
 #endif
+
