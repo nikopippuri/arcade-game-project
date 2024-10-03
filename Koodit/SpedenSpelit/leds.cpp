@@ -1,15 +1,10 @@
-#ifndef LEDS_H
-#define LEDS_H
+#include "leds.h"
 #include <arduino.h>
-
-/*
-  initializeLeds() subroutine intializes analog pins A2,A3,A4,A5
-  to be used as outputs. Speden Spelit leds are connected to those
-  pins.  
-*/
 
 volatile int viive = 500;
 int ledi_valon_kesto = 500;
+
+// Määritä pinnit ledeille
 
 void initializeLeds() {
   pinMode(5, OUTPUT);
@@ -18,18 +13,8 @@ void initializeLeds() {
   pinMode(2, OUTPUT);
 };
 
-/*
-  setLed(byte) sets correct led number given as 0,1,2 or 3
-  led number 0 corresponds to led connected at Arduino pin A2
-  led number 1 => Arduino pin A3
-  led number 2 => Arduino pin A4
-  led number 3 => Arduino pin A5
-  
-  parameters:
-  byte ledNumber is 0,1,2 or 3
+// Sytytä tietty ledi
 
-
-*/
 void setLed(byte ledNumber) {
   clearAllLeds();
   
@@ -55,32 +40,23 @@ void setLed(byte ledNumber) {
   }
 };
 
-/*
-  clearAllLeds(void) subroutine clears all leds
-*/
+// Sammuta kaikki ledit
+
 void clearAllLeds(void) {
   for(int i=2; i<=5; i++){
     digitalWrite(i, LOW);
   }
 };
 
-/*
-  setAllLeds subroutine sets all leds
-*/
-
-// KAIKILLE OMAT VASTUKSET
-
 
 void setAllLeds(void) {
   for(int i=2; i<=5; i++){
     digitalWrite(i, HIGH);
   }
-};;
+};
 
-/*
-  show1() subroutine shows numbers 0,1,...,15 as binary numbers
-  waits a bit and repeats number "show"
-*/
+// TURHA VALOSHOW 1
+
 void show1(void){
   clearAllLeds();   // 0
   delay(500);
@@ -165,15 +141,8 @@ void show1(void){
 
 };
 
-/*
-  show2(int) subroutine shows leds 0,1,2,3,0,1,2,3,.... with increasing
-  changing rate. And when top change speed has been reached
+// TURHA VALOSHOW 2
 
-    Parameters:
-  
-  int rounds: This parameter determines how many times 0,1,2,3 sequence
-              is shown. 
-*/
 void show2(int rounds){	
   for (int i=0; i < rounds; i++)
     
@@ -201,4 +170,3 @@ void show2(int rounds){
 
 };
 
-#endif
