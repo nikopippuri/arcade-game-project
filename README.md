@@ -44,14 +44,14 @@ To replicate this project, you will need the following components:
 - Tinkercad
 
 ## Setup
-Ohjeet projektin asentamiseen ja käyttöönottoon:
+Instructions for setting up and preparing project for use:
 
-1. Clonaa repositorio:
+1. Clone the repository:
     ```bash
     git clone https://github.com/kayttaja/speden-pelit.git
     ```
-2. Lataa projektitiedostot Arduino IDE -kehitysympäristöön.
-3. Kytke Arduino oikein ja lataa koodi laitteeseen.
+2. Download project files into your Arduino IDE -programming environment.
+3. Correctly plug in your Arduino and upload the code into the device.
 
 ## Käyttöohjeet
 Lyhyet ohjeet pelin käyttämiseen lisätään tähän.
