@@ -107,6 +107,7 @@ ISR(TIMER1_COMPA_vect) {
     newTimerInterrupt = true;
 }
 
+int checkCount = 1;
 void checkTheGame() {
 
   bool areSame = true;                                        //oletetaan, että taulukot userNumbers ja randomNumbers täsmäävät
@@ -114,7 +115,7 @@ void checkTheGame() {
     // Pelaajan syötteen tarkistus
     Serial.println("Tarkistetaan pelaajan syöte...");         // DEBUG
 
-   for (byte i = 0; i < 100; i++) {    //aloitetaan tarkistamaan taulukoiden sisältöjä alkio kerrallaan
+   for (byte i = 0; i < checkCount; i++) {    //aloitetaan tarkistamaan taulukoiden sisältöjä alkio kerrallaan
 
    if (userNumbers[i] != randomNumbers[i]) {
       areSame = false;    // jos eri eroavaisuuksia löytyy muutetaan areSame arvoksi false
