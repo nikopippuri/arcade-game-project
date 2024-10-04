@@ -25,10 +25,6 @@ pinMode (latchPin,OUTPUT); //Asetetaan latchPin Ulostulo-tilaan
 pinMode (dataPin,OUTPUT);  //Asetetaan dataPin Ulostulo-tilaan
 pinMode (clockPin,OUTPUT); //Asetetaan clockPin Ulostulo-tilaan
 }
-void setup()
-{
-  initializeDisplay(); 
-}
 
 void writeByte(uint8_t number,bool last) //hakee taulukosta kutsutun lukuarvon
 {
@@ -44,13 +40,6 @@ if(last){ //Jos viimeinen tavu, asetetaan seuraavaksi latch HIGH-tilaan
 digitalWrite(latchPin,HIGH); //Päivitetään luku näytölle asettamalla latch HIGH-tilaan.
 }
 }
-
-void loop()
-{
- showResult(29);  
- delay(500);
-}
-
 
 void writeHighAndLowNumber(uint8_t tens,uint8_t ones)
 {
