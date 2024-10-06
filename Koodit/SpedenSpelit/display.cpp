@@ -1,11 +1,11 @@
 #include "display.h"
 
-int latchPin = 8;  //Yhdistetään siirtorekisterin (74hc595) ST_CP (Storage Register Clock Input) Arduinon digital pinniin 8.
-int dataPin = 11;  //Yhdistetään siirtorekisterin (74hc595) DS (Serial Data Output) Arduinon digital pinniin 11.
-int clockPin = 12; //Yhdistetään siirtorekisterin (74hc595) SH_CP (Shift Register Clock Input) Arduinon digital pinniin 12
+int latchPin = 8;  // Yhdistetään siirtorekisterin (74hc595) ST_CP (Storage Register Clock Input) Arduinon digital pinniin 8.
+int dataPin = 11;  // Yhdistetään siirtorekisterin (74hc595) DS (Serial Data Output) Arduinon digital pinniin 11.
+int clockPin = 12; // Yhdistetään siirtorekisterin (74hc595) SH_CP (Shift Register Clock Input) Arduinon digital pinniin 12
 
-//Taulukko 0b-etuliite kertoo ohjelmalle että on tulossa 8-bittinen binääriluku
-//0b-etuliitteen jälkeen numerosarja tarkoittaa 7-segmentin segmenttejä DP-A-B-C-D-E-F-G
+// Taulukko 0b-etuliite kertoo ohjelmalle että on tulossa 8-bittinen binääriluku
+// 0b-etuliitteen jälkeen numerosarja tarkoittaa 7-segmentin segmenttejä DP-A-B-C-D-E-F-G
 byte Taulukko[] = {
     0b01111110, // Esittää luvun 0  
     0b00110000, // Esittää luvun 1               
@@ -19,29 +19,29 @@ byte Taulukko[] = {
     0b01111011  // Esittää luvun 9 
 };
 
-void initializeDisplay(void) //Alustetaan siirtorekisterin pinnit ulostulo-tilaan
+void initializeDisplay(void) // Alustetaan siirtorekisterin pinnit ulostulo-tilaan
 {
-pinMode (latchPin,OUTPUT); //Asetetaan latchPin Ulostulo-tilaan
-pinMode (dataPin,OUTPUT);  //Asetetaan dataPin Ulostulo-tilaan
-pinMode (clockPin,OUTPUT); //Asetetaan clockPin Ulostulo-tilaan
+pinMode (latchPin,OUTPUT); // Asetetaan latchPin Ulostulo-tilaan
+pinMode (dataPin,OUTPUT);  // Asetetaan dataPin Ulostulo-tilaan
+pinMode (clockPin,OUTPUT); // Asetetaan clockPin Ulostulo-tilaan
 }
 void setup()
 {
   initializeDisplay(); 
 }
 
-void writeByte(uint8_t number,bool last) //hakee taulukosta kutsutun lukuarvon
+void writeByte(uint8_t number,bool last) // Hakee taulukosta kutsutun lukuarvon
 {
-if (number > 9) //hyväksytään vain lukuarvot 0-9
+if (number > 9) // Hyväksytään vain lukuarvot 0-9
 {
 return;
 }
 
 digitalWrite(latchPin,LOW);
-digitalWrite(clockPin,LOW); //Valmistellaan tiedonsiirto asettamalla clock ja latchpin LOW-tilaan
-shiftOut(dataPin,clockPin,LSBFIRST,Taulukko[number]); //siirtää lukuarvon bitti bitiltä siirtorekisteriin.
-if(last){ //Jos viimeinen tavu, asetetaan seuraavaksi latch HIGH-tilaan
-digitalWrite(latchPin,HIGH); //Päivitetään luku näytölle asettamalla latch HIGH-tilaan.
+digitalWrite(clockPin,LOW); // Valmistellaan tiedonsiirto asettamalla clock ja latchpin LOW-tilaan
+shiftOut(dataPin,clockPin,LSBFIRST,Taulukko[number]); // Siirtää lukuarvon bitti bitiltä siirtorekisteriin.
+if(last){ // Jos viimeinen tavu, asetetaan seuraavaksi latch HIGH-tilaan
+digitalWrite(latchPin,HIGH); // Päivitetään luku näytölle asettamalla latch HIGH-tilaan.
 }
 }
 
