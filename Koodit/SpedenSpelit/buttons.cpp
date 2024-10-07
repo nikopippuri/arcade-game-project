@@ -1,52 +1,54 @@
 #include "buttons.h"
 
-
-volatile int pcint1PinLow = 0;  
-volatile bool timeToCheckGameStatus = false; 
+volatile int pcint1PinLow = 0;
+volatile bool timeToCheckGameStatus = false;
+unsigned long lastInterruptTime = 0; // Variable to store the last interrupt time
+const unsigned long debounceDelay = 50; // 50ms debounce time
 
 void initButtonsAndButtonInterrupts(void)
 {
-  // See requirements for this function from buttons.h
-
-      // Asetetaan pinnit A0-A3 (14-17) käyttämään INPUT_PULLUP -tilaa
+    // Set pins A0-A3 (14-17) to use INPUT_PULLUP mode
     for (int i = A0; i <= A3; i++) {
         pinMode(i, INPUT_PULLUP);
     }
 
-    // Aktivoidaan PCINT1 (Portti C), muut portit disabloitu
-    PCICR |= (1 << PCIE1); // PCINT1 käytössä
+    // Activate PCINT1 (Port C), other ports disabled
+    PCICR |= (1 << PCIE1); // Enable PCINT1
 
-    // Enable PCINT14-17 (pinnit A0-A3)
-    PCMSK1 = B00001111; // 0x0F; // Enable pins A0, A1, A2, A3
+    // Enable PCINT14-17 (pins A0-A3)
+    PCMSK1 = B00001111; // 0x0F; Enable pins A0, A1, A2, A3
 
-    Serial.begin(9600); // Sarjaviestintä alkaa nopeudella 9600 bps
-    interrupts(); // Keskeytykset enabloidaan
-
+    Serial.begin(9600); // Start serial communication at 9600 bps
+    interrupts(); // Enable interrupts
 }
 
 ISR(PCINT1_vect) {
+    unsigned long currentTime = millis(); // Get current time
 
-  for (int i = A0; i <= A3; i++) {
-        // Luetaan nykyinen tila
-        byte pinState = digitalRead(i);
+    // Check if debounce delay has passed since the last valid interrupt
+    if (currentTime - lastInterruptTime > debounceDelay) {
+        for (int i = A0; i <= A3; i++) {
+            // Read current pin state
+            byte pinState = digitalRead(i);
         
-        if (pinState == LOW) {
-            // Jos pinni on LOW, talletetaan se
-            pcint1PinLow = i;
+            if (pinState == LOW) {
+                // If pin is LOW, store it
+                pcint1PinLow = i;
 
-            Serial.print("PCINT1-väylästä keskeytys pinnistä HIGH to LOW = ");
-            Serial.println(pcint1PinLow);
+                Serial.print("PCINT1 interrupt on pin (HIGH to LOW) = ");
+                Serial.println(pcint1PinLow);
 
-            // LISÄÄ SAMALLA KYSEINEN LUKU painetut_nappulat[painetut_indeksi] taulukkoon??
+                // Set flag for game status check
+                timeToCheckGameStatus = true;
 
-          timeToCheckGameStatus = true;
+                // Update last interrupt time
+                lastInterruptTime = currentTime;
 
-            break; // Lopetetaan, kun ensimmäinen LOW-pinni on löydetty
+                break; // Stop when the first LOW pin is found
+            }
         }
-
-         pcint1PinLow = 0; // Nollataan arvo, jotta voidaan käsitellä seuraava keskeytys
-
-  }
+        pcint1PinLow = 0; // Reset value to handle the next interrupt
+    }
 }
 
 
