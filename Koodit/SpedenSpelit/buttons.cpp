@@ -1,8 +1,7 @@
 #include "buttons.h"
 
 
-volatile int pcint1PinLow = 0;  
-volatile bool timeToCheckGameStatus = false; 
+
 
 void initButtonsAndButtonInterrupts(void)
 {
@@ -24,29 +23,6 @@ void initButtonsAndButtonInterrupts(void)
 
 }
 
-ISR(PCINT1_vect) {
 
-  for (int i = A0; i <= A3; i++) {
-        // Luetaan nykyinen tila
-        byte pinState = digitalRead(i);
-        
-        if (pinState == LOW) {
-            // Jos pinni on LOW, talletetaan se
-            pcint1PinLow = i;
-
-            Serial.print("PCINT1-väylästä keskeytys pinnistä HIGH to LOW = ");
-            Serial.println(pcint1PinLow);
-
-            // LISÄÄ SAMALLA KYSEINEN LUKU painetut_nappulat[painetut_indeksi] taulukkoon??
-
-          timeToCheckGameStatus = true;
-
-            break; // Lopetetaan, kun ensimmäinen LOW-pinni on löydetty
-        }
-
-         pcint1PinLow = 0; // Nollataan arvo, jotta voidaan käsitellä seuraava keskeytys
-
-  }
-}
 
 
