@@ -6,6 +6,7 @@
 // Vertailuun liittyvien muuttujien määrittelyt
 byte randomNumbers[98];   // Taulukko arvottujen lukujen tallentamiseen
 byte userNumbers[98];     // Taulukko pelaajan painamien lukujen tallentamiseen
+
 int currentIndex = 0;     // Taulukon indeksi satunnaisluvuille
 int buttonIndex = 0;      // Taulukon indeksi pelaajan painamille numeroille
 
@@ -15,27 +16,32 @@ int timerSpeed = 15624;   // Timer-arvo
 
 // Debounce kytkin värinän poisto
 volatile unsigned long lastDebounceTime = 0;   // Edellisen painalluksen aikaleima
-const unsigned long debounceDelay = 200;        // 50 ms viive
+const unsigned long debounceDelay = 250;        // 200 ms viive
 
 // Lopputuloksen seuranta
 int OIKEAT = 0;           // Oikeiden vastausten laskuri
+// int ENNATYS = 0;       // Ennätys
 
 // Väliaikainen autokäynnistys ja pelitila
 bool peliKaynnissa = false;  // Peli käynnissä -lippu
-bool alku = true;
+bool alku = true;             // Väliaikainen aloitus
 
 // Volatile-muuttujat keskeytyksiä varten
 volatile int buttonNumber = -1;           // Talletetaan painettu nappi
 volatile bool newTimerInterrupt = false;  // Timerin keskeytys
 
 void setup() {
+
+    randomSeed(analogRead(5));          // Random() funktion korjaava alustusfunktio
     Serial.begin(9600);  // Käynnistä sarjaviestintä 9600 nopeudella
     Serial.println("Pelin alustus alkaa...");
 
     initializeTimer();                  // Timer 1 alustus
     initButtonsAndButtonInterrupts();   // Painikkeiden määritys ja keskeytykset
     initializeLeds();                   // Ledien alustus
-    initializeDisplay();            // Näyttöjen alustus
+    initializeDisplay();                // Näyttöjen alustus
+
+    
 
     Serial.println("Peli alustettu!");
 }
@@ -105,7 +111,7 @@ void checkTheGame() {
         OIKEAT++;
         Serial.print("Pisteitä kasassa: ");
         Serial.println(OIKEAT);
-         showResult(OIKEAT);
+        showResult(OIKEAT);
     }
 }
 
@@ -128,7 +134,7 @@ void stopTheGame() {
     Serial.println("Peli pysäytetty.");
     Serial.print("LOPPUTULOS: ");
     Serial.println(OIKEAT);
-     showResult(OIKEAT);
+    showResult(OIKEAT);
 }
 
 void moreSpeed() {
