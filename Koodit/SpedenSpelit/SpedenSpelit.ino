@@ -3,7 +3,9 @@
 #include "leds.h"
 #include "SpedenSpelit.h"
 
+
 // Vertailuun liittyvien muuttujien määrittelyt
+
 byte randomNumbers[98];   // Taulukko arvottujen lukujen tallentamiseen
 byte userNumbers[98];     // Taulukko pelaajan painamien lukujen tallentamiseen
 
@@ -27,8 +29,10 @@ bool peliKaynnissa = false;  // Peli käynnissä -lippu
 bool alku = true;             // Väliaikainen aloitus
 
 // Volatile-muuttujat keskeytyksiä varten
+
 volatile int buttonNumber = -1;           // Talletetaan painettu nappi
 volatile bool newTimerInterrupt = false;  // Timerin keskeytys
+
 
 void setup() {
 
@@ -47,6 +51,7 @@ void setup() {
 }
 
 void loop() {
+
     if (buttonNumber >= 0) {  // Tarkistetaan onko nappia painettu
         if (alku == true) {
             Serial.println("Peli alkaa hetken kuluttua...");
@@ -54,6 +59,7 @@ void loop() {
             startTheGame();
             alku = false;                  
                                
+
         } else if (buttonNumber >= 0 && buttonNumber < 4) {
             Serial.print("Painiketta ");
             Serial.print(buttonNumber);
@@ -63,12 +69,14 @@ void loop() {
         buttonNumber = -1;  // Nollataan napin numero jokaisen painalluksen jälkeen
     }
 
+
     if (peliKaynnissa && newTimerInterrupt) {       // Jos peli käynnissä ja keskeytys tullut
         byte randomValue = random(0, 4);            // Arpoo numeron 0,1,2,3 
         randomNumbers[currentIndex] = randomValue;  // Tallennetaan arvo taulukkoon
         Serial.print("Satunnaisluku arvottu: ");
         Serial.println(randomValue);
         setLed(randomValue);                        // Sytytetään vastaava LED
+
         currentIndex++;
 
         drawCount++;  // Nopeutuslaskuri
@@ -77,7 +85,9 @@ void loop() {
             moreSpeed();  // Nopeutetaan peliä
         }
 
+
         newTimerInterrupt = false;  // Nollataan keskeytys
+
     }
 }
 
@@ -96,11 +106,13 @@ void checkTheGame() {
     bool areSame = true;  // Oletus: pelaajan syöte ja arvotut luvut täsmäävät
     Serial.println("Tarkistetaan pelaajan syöte...");
 
+
     for (byte i = 0; i < buttonIndex; i++) {  // Käy läpi pelaajan arvaamat luvut
         if (userNumbers[i] != randomNumbers[i]) {
             areSame = false;  // Jos virhe, lopeta tarkistus
             break;
         }
+
     }
 
     if (areSame == false) {
@@ -142,8 +154,10 @@ void moreSpeed() {
     OCR1A = timerSpeed;  // Päivitetään timerin arvo
 }
 
+
 ISR(TIMER1_COMPA_vect) {
     newTimerInterrupt = true;  // Timerin keskeytys
+
 }
 
 ISR(PCINT1_vect) {

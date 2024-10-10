@@ -1,3 +1,4 @@
+
 #include "buttons.h"
 
 
@@ -22,6 +23,7 @@ void initButtonsAndButtonInterrupts(void)
     interrupts(); // Keskeytykset enabloidaan
 
 }
+
 
 
 
