@@ -3,97 +3,102 @@
 #include "leds.h"
 #include "SpedenSpelit.h"
 
-// Muuttujien määrittelyt
-byte randomNumbers[98];   // Taulukko arvottejuen lukujen tallentamiseen
+byte randomNumbers[98];   // Taulukko arvottujen lukujen tallentamiseen
 byte userNumbers[98];     // Taulukko pelaajan painamien lukujen tallentamiseen
-int currentIndex = 0;     // Taulukon indeksi
+int currentIndex = 0;     // Taulukon indeksi satunnaisluvuille
+int buttonIndex = 0;      // Taulukon indeksi pelaajan painamille numeroille
 int drawCount = 0;        // Arvontojen määrän laskuri pelin nopeuttamista varten
-int timerSpeed = 15624;   // Vahti
-int OIKEAT = 0;           // DEBUG
-bool peliKaynnissa = false; // DEBUG 
+int timerSpeed = 15624;   // Timer-arvo
+volatile int buttonNumber = -1;           // Talletetaan painettu nappi
+volatile bool newTimerInterrupt = false;  // Timerin keskeytys
+bool START = true;        // Pelin aloituksen odotus            
+bool resetState = false;  // Resetoinnin tila
+// Debounce kytkin värinän poisto
+volatile unsigned long lastDebounceTime = 0;   // Edellisen painalluksen aikaleima
+const unsigned long debounceDelay = 250;        // 200 ms viive
+// Lopputuloksen seuranta
+int OIKEAT = 0;           // Oikeiden vastausten laskuri
+// int ENNATYS = 0;       // Ennätys
+// Väliaikainen autokäynnistys ja pelitila
+bool peliKaynnissa = false;  // Peli käynnissä -lippu
+bool alku = true;             // Väliaikainen aloitus
 
-
-// Volatile-muuttujat keskeytyksiä varten
-volatile int buttonNumber = -1;           // for buttonista tuleva keskeytys
-volatile bool newTimerInterrupt = false;  // for timer interrupt handler
 
 void setup() {
+
+    randomSeed(analogRead(5));          // Random() funktion korjaava alustusfunktio
     Serial.begin(9600);  // Käynnistä sarjaviestintä 9600 nopeudella
-    Serial.println("Pelin alustus alkaa..."); // DEBUG
-
+    Serial.println("Pelin alustus alkaa...");
     initializeTimer();                  // Timer 1 alustus
-
     initButtonsAndButtonInterrupts();   // Painikkeiden määritys ja keskeytykset
-
     initializeLeds();                   // Ledien alustus
-
-    // initializeDisplays();            // Näyttöjen alustus
-
-    Serial.println("Peli alustettu!");  // DEBUG
-
+    initializeDisplay();                // Näyttöjen alustus           
+    Serial.println("Peli alustettu!");
 }
 
 void loop() {
 
-  while (peliKaynnissa) {
-    // Tarkistetaan, mitään nappia painettu
-    if (buttonNumber >= 0) {
-        if (buttonNumber == 4) {
-            Serial.println("Pelin aloitus nappia painettu, peli alkaa..."); // DEBUG käynnistysnappi
-            startTheGame();                                             
+ if (START == true ) {  // Peli odottaa 
+  setLed(0);
+  setLed(1);
+  setLed(2);
+  setLed(3);
+    if (buttonNumber >=0) {
+         START = false;
+       }
+
+ }
+  
+   else if (buttonNumber >= 0 && !resetState) {  // Tarkistetaan onko nappia painettu ja ettei peli ole reset tilassa
+        if (alku == true) {          
+            Serial.println("Peli alkaa hetken kuluttua...");
+            delay(2000);        
+            startTheGame();
+            alku = false;                                                
+
         } else if (buttonNumber >= 0 && buttonNumber < 4) {
             Serial.print("Painiketta ");
             Serial.print(buttonNumber);
             Serial.println(" painettu, tarkistetaan peli...");
-            checkTheGame();  // 
+            checkTheGame();
         }
-        buttonNumber = -1;  // Nollataan napin numero
+       buttonNumber = -1;  // Nollataan napin numero jokaisen painalluksen jälkeen
     }
 
-    // Tarkistetaan, onko uusi keskeytys tullut Timer 1:ltä 
-    if (newTimerInterrupt == true) {
-        // Satunnaisluku ja vastaava LED syttyy
-        byte randomValue = random(0, 4);            // arpoo numeron 0,1,2,3 
-        randomNumbers[currentIndex] = randomValue;  // Sijoittaa arvotun luvun, randomNumbers taulukkoon
+    if (peliKaynnissa && newTimerInterrupt) {       // Jos peli käynnissä ja keskeytys tullut
+        byte randomValue = random(0, 4);            // Arpoo numeron 0,1,2,3 
+        randomNumbers[currentIndex] = randomValue;  // Tallennetaan arvo taulukkoon
+        Serial.print("Satunnaisluku arvottu: ");
+        Serial.println(randomValue);
+        setLed(randomValue);                        // Sytytetään vastaava LED
 
-        Serial.print("Satunnaisluku arvottu: ");    // DEBUG
-        Serial.println(randomValue);                // DEBUG
-        setLed(randomValue);                        // DEBUG syttyykö valo
         currentIndex++;
 
-        /* TAULUKOIDEN DEBUG
-
-        for (int i = 0; i < 98; i++) {
-        Serial.print("arvotut ");
-        Serial.print(i);
-        Serial.print(": ");
-        Serial.println(randomNumbers[i]);
-        Serial.print("arvaukset ");
-        Serial.print(i);
-        Serial.print(": ");
-        Serial.println(userNumbers[i]);
+        drawCount++;  // Nopeutuslaskuri
+        if (drawCount == 10) {
+            drawCount = 0;
+            moreSpeed();  // Nopeutetaan peliä
         }
-
-        */
-
-
-
-        Serial.println(timerSpeed);
-
-        drawCount++ ;     // kasvattaa pelin nopeudenlaskuria 
-        if(drawCount == 10) {    // jos laskuri 10, niin nopeutetaan timeria antamaan keskeytyksiä 10% nopeammin
-        drawCount = 0;      // nollataan nopeuslaskuri
-        moreSpeed();
-
-   }
-
-        newTimerInterrupt = false;  // Nollataan keskeytyksen merkkibitti
+             newTimerInterrupt = false;  // Nollataan keskeytys
     }
+      if (resetState) {
+         digitalWrite(5, HIGH);
+         delay(500);
+         digitalWrite(5, LOW);
+         delay(300);
+         }
+
+       if (buttonNumber == 0 && resetState){ 
+          resetCountdown();
+          delay(1000);
+          reset();
+          }
+     
 }
-}
+
+// FUNKTIOT & KESKEYTYKSET
 
 void initializeTimer(void) {
-    // Alustetaan Timer 1
     TCCR1A = 0;            // Nollataan rekisteri
     TCCR1B = 0b00001101;   // CTC-tila ja prescaler
     OCR1A = timerSpeed;    // Vertailuarvo
@@ -102,41 +107,34 @@ void initializeTimer(void) {
     Serial.println("Timer alustettu.");
 }
 
-ISR(TIMER1_COMPA_vect) {
-    // Asetetaan keskeytykseen true
-    newTimerInterrupt = true;
-}
-
-int checkCount = 1;
 void checkTheGame() {
+    bool areSame = true;  // Oletus: pelaajan syöte ja arvotut luvut täsmäävät
+    Serial.println("Tarkistetaan pelaajan syöte...");
 
-  bool areSame = true;                                        //oletetaan, että taulukot userNumbers ja randomNumbers täsmäävät
-   
-    // Pelaajan syötteen tarkistus
-    Serial.println("Tarkistetaan pelaajan syöte...");         // DEBUG
-
-   for (byte i = 0; i < checkCount; i++) {    //aloitetaan tarkistamaan taulukoiden sisältöjä alkio kerrallaan
-
-   if (userNumbers[i] != randomNumbers[i]) {
-      areSame = false;    // jos eri eroavaisuuksia löytyy muutetaan areSame arvoksi false
-      break;  } // keskeyttää silmukan, jos eroavaisuus löytyy, eikä käy turhaan kaikkia läpi
-}
-   if(!areSame) {   //tarkastetaan areSamen tila, jos muuttunut false arvoon ->  if lause toteutuu 
-    Serial.println("Väärä painike painettu. Peli päättyy.");  // DEBUG
-     stopTheGame();  //peli päättyy funktion kutsu 
- } 
-   else {
-    Serial.println("Oikea painike painettu & peli jatkuu");   // DEBUG
-    showResult(OIKEAT);  // Jos taulukoiden alkiot ovat samat, peli jatkuu ja pelin tilanne näytetään showResults aliohjelmalla
-}
-
-
+    for (byte i = 0; i < buttonIndex; i++) {  // Käy läpi pelaajan arvaamat luvut
+        if (userNumbers[i] != randomNumbers[i]) {
+            areSame = false;  // Jos virhe, lopeta tarkistus
+            break;
+        }
     }
 
+    if (areSame == false) {
+        Serial.println("Väärä painike painettu. Peli päättyy.");
+        stopTheGame();  // Peli päättyy
+    } else {
+        Serial.println("Oikea painike painettu & peli jatkuu");
+        OIKEAT++;
+        Serial.print("Pisteitä kasassa: ");
+        Serial.println(OIKEAT);
+        showResult(OIKEAT);
+    }
+}
 
 void initializeGame() {
     Serial.println("Pelin alustus...");
-    currentIndex = 0;  // Nollataan taulukon indeksi
+    currentIndex = 0;  // Nollataan indeksit
+    buttonIndex = 0;
+    peliKaynnissa = true;
 }
 
 void startTheGame() {
@@ -145,19 +143,81 @@ void startTheGame() {
 }
 
 void stopTheGame() {
+    peliKaynnissa = false;
     TCCR1B = 0;  // Pysäytetään timerin laskenta
     TIMSK1 &= ~(1 << OCR1A);   // Disabloidaan keskeytykset
-    Serial.println("Peli pysäytetty. Näytetään tulokset.");
+    Serial.println("Peli pysäytetty.");
+    Serial.print("LOPPUTULOS: ");
+    Serial.println(OIKEAT);
+    resetState = true;
+   
+  
+ if (buttonNumber == 0) {   
+   Serial.println("resetoidaan peli ");
+   resetCountdown();
+   delay(1000);
+   reset();
+ }
 
-    //  showResults();  // Kutsutaan funktiota, joka näyttää pelin tuloksen
-    //  void show2();    // vilkuttaa valoja tms, mikä tarkoittaa uutta ennätystä.
 }
+void reset() {
 
-void resetGame() {
-    Serial.println("Peli resetoidaan...");
+    OIKEAT = 0;
+    currentIndex = 0;
+    buttonIndex = 0;
+    drawCount = 0;
+    timerSpeed = 15624;  
+    START = true;
+    alku = true;
+    resetState = false;
+    buttonNumber = -1;
+    initializeLeds();   // Resetoi LEDit
+    initializeDisplay();
+    initializeTimer();
+}   
+
+void resetCountdown() {
+    delay(500);
+   digitalWrite(2, HIGH);
+   digitalWrite(3, HIGH);
+   digitalWrite(4, HIGH);
+   digitalWrite(5, HIGH);
+   delay (500);
+   digitalWrite(5, LOW);
+    delay (500);
+   digitalWrite(4, LOW);
+    delay (500);
+   digitalWrite(3, LOW);
+    delay (500);
+   digitalWrite(2, LOW);
 }
 
 void moreSpeed() {
-  timerSpeed = timerSpeed * 0.9;  // kertoo timerin arvon  -> koska timer saavuttaa uuden pienemmän arvon nopeammin vauhti kiihtyy 
-  OCR1A  = timerSpeed; // Määritetään timerille uusin arvo 
+    timerSpeed = timerSpeed * 0.9;  // Nopeutetaan timeria
+    OCR1A = timerSpeed;  // Päivitetään timerin arvo
+}
+
+ISR(TIMER1_COMPA_vect) {
+    newTimerInterrupt = true;  // Timerin keskeytys
+
+}
+
+ISR(PCINT1_vect) {
+    unsigned long currentTime = millis();  // Tallenna nykyinen aika
+
+    if ((currentTime - lastDebounceTime) > debounceDelay) {  // Tarkistetaan viive edellisen painalluksen ja nykyisen välillä
+        for (int i = A0; i <= A3; i++) {
+            byte pinState = digitalRead(i);
+            if (pinState == LOW) {  // Jos nappi on painettu
+                buttonNumber = i - A0;  // Talletetaan nappi
+                userNumbers[buttonIndex++] = buttonNumber;  // Talletetaan pelaajan painallus
+
+                Serial.print("Painettu nappi: ");
+                Serial.println(buttonNumber);  // DEBUG
+
+                lastDebounceTime = currentTime;  // Päivitetään viimeisin painallusaika
+                break;
+            }
+        }
+    }
 }
