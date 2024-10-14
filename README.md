@@ -18,6 +18,7 @@ Through this project, we have learned about integrating hardware and software wh
 - [Circuit Diagrams](#circuit-diagrams)
 - [Flowcharts](#flowcharts)
 - [Authors](#authors)
+- [License](#licence)
 
 ## Features
 
@@ -48,16 +49,34 @@ Instructions for setting up and preparing project for use:
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/kayttaja/speden-pelit.git
+    git clone https://github.com/nikopippuri/speden-spelit-r2.git
     ```
 2. Download project files into your Arduino IDE -programming environment.
 3. Correctly plug in your Arduino and upload the code into the device.
 
-## Käyttöohjeet
-Lyhyet ohjeet pelin käyttämiseen lisätään tähän.
+## How to Play (Game Instructions)
+Press any button to start the game.
+The LED lights will turn on in a random order, and you need to press the corresponding button.
+If you press the wrong button, the game ends.
+If you answer correctly you get a point and the game gets faster.
+The game saves alltime highscores to EEPROM memory and it will be displayed in the startup.
 
-## Kansiomalli
-Tähän voit kuvata projektin kansiorakenteen.
+## Folder Structure
+speden-spelit-r2/
+├── Images/
+│   ├── circuit_diagram.pdf         
+│   ├── circuit_tinkercad.png      
+│   └── flowchart.png               
+├── Koodit/SpedenSpelit
+│   ├── SpedenSpelit.h              
+│   ├── SpedenSpelit.ino           // GameLogic
+│   ├── buttons.cpp                // Buttons
+│   ├── buttons.h                   
+│   ├── display.cpp                // Displays
+│   ├── display.h                   
+│   ├── leds.cpp                   // LEDS
+│   └── leds.h                      
+└── README.md                      // README
 
 ## Circuit Diagrams
 
@@ -73,4 +92,33 @@ Here is the flowchart about gamelogic:
 ![Flowchart](Images/flowchart.png)
 
 ## Authors
-Tähän voit lisätä projektin tekijöiden nimet ja yhteystiedot.
+-Iiro Toivari
+-Jan-Markus Jaakola
+-Mika Wallenius
+-Niko Pippuri
+
+
+## License
+
+MIT License
+
+Copyright (c) [2024] [See contributors in the "Authors" section]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
