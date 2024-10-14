@@ -4,74 +4,67 @@
 #include "SpedenSpelit.h"
 #include "EEPROM.h"
 
-
-// Vertailuun liittyvien muuttujien määrittelyt
-
 byte randomNumbers[98];   // Taulukko arvottujen lukujen tallentamiseen
 byte userNumbers[98];     // Taulukko pelaajan painamien lukujen tallentamiseen
-
 int currentIndex = 0;     // Taulukon indeksi satunnaisluvuille
 int buttonIndex = 0;      // Taulukon indeksi pelaajan painamille numeroille
-
-// Nopeus määrittelyt
 int drawCount = 0;        // Arvontojen määrän laskuri pelin nopeuttamista varten
 int timerSpeed = 15624;   // Timer-arvo
-
+volatile int buttonNumber = -1;           // Talletetaan painettu nappi
+volatile bool newTimerInterrupt = false;  // Timerin keskeytys
+bool START = true;        // Pelin aloituksen odotus            
+bool resetState = false;  // Resetoinnin tila
 // Debounce kytkin värinän poisto
 volatile unsigned long lastDebounceTime = 0;   // Edellisen painalluksen aikaleima
 const unsigned long debounceDelay = 250;        // 200 ms viive
-
 // Lopputuloksen seuranta
 int OIKEAT = 0;           // Oikeiden vastausten laskuri
 
-
 const int eepromOsoite = 0;
-int ENNATYS;
-
+int ENNATYS ;       // Ennätys
 
 // Väliaikainen autokäynnistys ja pelitila
 bool peliKaynnissa = false;  // Peli käynnissä -lippu
 bool alku = true;             // Väliaikainen aloitus
 
-// Volatile-muuttujat keskeytyksiä varten
-
-volatile int buttonNumber = -1;           // Talletetaan painettu nappi
-volatile bool newTimerInterrupt = false;  // Timerin keskeytys
-
 
 void setup() {
 
     randomSeed(analogRead(5));          // Random() funktion korjaava alustusfunktio
-
     Serial.begin(9600);  // Käynnistä sarjaviestintä 9600 nopeudella
-    Serial.println("Pelin alustus alkaa...");
-    delay(100);
-
-
-    ENNATYS = EEPROM.read(eepromOsoite);     // Ennätys
+    
+    ENNATYS = EEPROM.read(eepromOsoite);     // Ennatys
     Serial.print("Eepromi: ");
     Serial.println(ENNATYS);
 
+    Serial.println("Pelin alustus alkaa...");
     initializeTimer();                  // Timer 1 alustus
     initButtonsAndButtonInterrupts();   // Painikkeiden määritys ja keskeytykset
     initializeLeds();                   // Ledien alustus
-    initializeDisplay();                // Näyttöjen alustus
-    showResult(00);                // Alussa näyttää ennätyksen
-
-    
-
+    initializeDisplay();                // Näyttöjen alustus          
+    showResult(ENNATYS); 
     Serial.println("Peli alustettu!");
 }
 
 void loop() {
 
-    if (buttonNumber >= 0) {  // Tarkistetaan onko nappia painettu
-        if (alku == true) {
+ if (START == true ) {  // Peli odottaa 
+  setLed(0);
+  setLed(1);
+  setLed(2);
+  setLed(3);
+    if (buttonNumber >=0) {
+         START = false;
+       }
+
+ }
+  
+   else if (buttonNumber >= 0 && !resetState) {  // Tarkistetaan onko nappia painettu ja ettei peli ole reset tilassa
+        if (alku == true) {          
             Serial.println("Peli alkaa hetken kuluttua...");
-            delay(500);        
+            delay(2000);        
             startTheGame();
-            alku = false;                  
-                               
+            alku = false;                                                
 
         } else if (buttonNumber >= 0 && buttonNumber < 4) {
             Serial.print("Painiketta ");
@@ -79,9 +72,8 @@ void loop() {
             Serial.println(" painettu, tarkistetaan peli...");
             checkTheGame();
         }
-        buttonNumber = -1;  // Nollataan napin numero jokaisen painalluksen jälkeen
+       buttonNumber = -1;  // Nollataan napin numero jokaisen painalluksen jälkeen
     }
-
 
     if (peliKaynnissa && newTimerInterrupt) {       // Jos peli käynnissä ja keskeytys tullut
         byte randomValue = random(0, 4);            // Arpoo numeron 0,1,2,3 
@@ -97,11 +89,21 @@ void loop() {
             drawCount = 0;
             moreSpeed();  // Nopeutetaan peliä
         }
-
-
-        newTimerInterrupt = false;  // Nollataan keskeytys
-
+             newTimerInterrupt = false;  // Nollataan keskeytys
     }
+      if (resetState) {
+         digitalWrite(5, HIGH);
+         delay(500);
+         digitalWrite(5, LOW);
+         delay(300);
+         }
+
+       if (buttonNumber == 0 && resetState){ 
+          resetCountdown();
+          delay(1000);
+          reset();
+          }
+     
 }
 
 // FUNKTIOT & KESKEYTYKSET
@@ -119,13 +121,11 @@ void checkTheGame() {
     bool areSame = true;  // Oletus: pelaajan syöte ja arvotut luvut täsmäävät
     Serial.println("Tarkistetaan pelaajan syöte...");
 
-
     for (byte i = 0; i < buttonIndex; i++) {  // Käy läpi pelaajan arvaamat luvut
         if (userNumbers[i] != randomNumbers[i]) {
             areSame = false;  // Jos virhe, lopeta tarkistus
             break;
         }
-
     }
 
     if (areSame == false) {
@@ -153,46 +153,63 @@ void startTheGame() {
 }
 
 void stopTheGame() {
-
-      
     peliKaynnissa = false;
     TCCR1B = 0;  // Pysäytetään timerin laskenta
     TIMSK1 &= ~(1 << OCR1A);   // Disabloidaan keskeytykset
     Serial.println("Peli pysäytetty.");
     Serial.print("LOPPUTULOS: ");
     Serial.println(OIKEAT);
-    delay(5000);
-  //  showResult(OIKEAT);  ei tee mitään
-  if (OIKEAT > ENNATYS) {
+
+    if (OIKEAT > ENNATYS) {
     EEPROM.write(eepromOsoite, OIKEAT);
   }
+    resetState = true;
+   
+  
+ if (buttonNumber == 0) {   
    Serial.println("resetoidaan peli ");
-   delay(5000);
+   resetCountdown();
+   delay(1000);
    reset();
- 
- 
- 
+ }
+
 }
 void reset() {
- 
+
     OIKEAT = 0;
     currentIndex = 0;
     buttonIndex = 0;
     drawCount = 0;
     timerSpeed = 15624;  
-    showResult(ENNATYS);
- 
+    START = true;
     alku = true;
+    resetState = false;
+    buttonNumber = -1;
     initializeLeds();   // Resetoi LEDit
     initializeDisplay();
     initializeTimer();
-}  
+}   
+
+void resetCountdown() {
+    delay(500);
+   digitalWrite(2, HIGH);
+   digitalWrite(3, HIGH);
+   digitalWrite(4, HIGH);
+   digitalWrite(5, HIGH);
+   delay (500);
+   digitalWrite(5, LOW);
+    delay (500);
+   digitalWrite(4, LOW);
+    delay (500);
+   digitalWrite(3, LOW);
+    delay (500);
+   digitalWrite(2, LOW);
+}
 
 void moreSpeed() {
     timerSpeed = timerSpeed * 0.9;  // Nopeutetaan timeria
     OCR1A = timerSpeed;  // Päivitetään timerin arvo
 }
-
 
 ISR(TIMER1_COMPA_vect) {
     newTimerInterrupt = true;  // Timerin keskeytys
