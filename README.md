@@ -104,17 +104,17 @@ Here is the flowchart about gamelogic:
 ![Flowchart](Images/flowchart.png)
 
 ## Authors
--Iiro Toivari
--Jan-Markus Jaakola
--Mika Wallenius
--Niko Pippuri
 
+- Iiro Toivari
+- Jan-Markus Jaakola
+- Mika Wallenius
+- Niko Pippuri
 
 ## License
 
-MIT License
+**MIT License**
 
-Copyright (c) [2024] [See contributors in the "Authors" section]
+Copyright (c) [2024] [See contributors in the **"Authors"** section]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
