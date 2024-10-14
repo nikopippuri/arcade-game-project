@@ -68,7 +68,9 @@ Here is the circuit diagram in Tinkercad:
 You can also download a detailed circuit diagram in PDF format [from this link](Images/circuit_diagram.pdf).
 
 ## Flowcharts
-Tähän osioon lisätään projektin flowchartit, jotka selittävät pelin toiminnallisuuden ja logiikan.
+Here is the flowchart about gamelogic:
+
+![Flowchart](Images/flowchart.png)
 
 ## Authors
 Tähän voit lisätä projektin tekijöiden nimet ja yhteystiedot.
