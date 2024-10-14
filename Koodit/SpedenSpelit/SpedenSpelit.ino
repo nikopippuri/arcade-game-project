@@ -2,6 +2,7 @@
 #include "buttons.h"
 #include "leds.h"
 #include "SpedenSpelit.h"
+#include "EEPROM.h"
 
 
 // Vertailuun liittyvien muuttujien määrittelyt
@@ -22,7 +23,11 @@ const unsigned long debounceDelay = 250;        // 200 ms viive
 
 // Lopputuloksen seuranta
 int OIKEAT = 0;           // Oikeiden vastausten laskuri
-// int ENNATYS = 0;       // Ennätys
+
+
+const int eepromOsoite = 0;
+int ENNATYS;
+
 
 // Väliaikainen autokäynnistys ja pelitila
 bool peliKaynnissa = false;  // Peli käynnissä -lippu
@@ -37,13 +42,21 @@ volatile bool newTimerInterrupt = false;  // Timerin keskeytys
 void setup() {
 
     randomSeed(analogRead(5));          // Random() funktion korjaava alustusfunktio
+
     Serial.begin(9600);  // Käynnistä sarjaviestintä 9600 nopeudella
     Serial.println("Pelin alustus alkaa...");
+    delay(100);
+
+
+    ENNATYS = EEPROM.read(eepromOsoite);     // Ennätys
+    Serial.print("Eepromi: ");
+    Serial.println(ENNATYS);
 
     initializeTimer();                  // Timer 1 alustus
     initButtonsAndButtonInterrupts();   // Painikkeiden määritys ja keskeytykset
     initializeLeds();                   // Ledien alustus
     initializeDisplay();                // Näyttöjen alustus
+    showResult(00);                // Alussa näyttää ennätyksen
 
     
 
@@ -140,14 +153,40 @@ void startTheGame() {
 }
 
 void stopTheGame() {
+
+      
     peliKaynnissa = false;
     TCCR1B = 0;  // Pysäytetään timerin laskenta
     TIMSK1 &= ~(1 << OCR1A);   // Disabloidaan keskeytykset
     Serial.println("Peli pysäytetty.");
     Serial.print("LOPPUTULOS: ");
     Serial.println(OIKEAT);
-    showResult(OIKEAT);
+    delay(5000);
+  //  showResult(OIKEAT);  ei tee mitään
+  if (OIKEAT > ENNATYS) {
+    EEPROM.write(eepromOsoite, OIKEAT);
+  }
+   Serial.println("resetoidaan peli ");
+   delay(5000);
+   reset();
+ 
+ 
+ 
 }
+void reset() {
+ 
+    OIKEAT = 0;
+    currentIndex = 0;
+    buttonIndex = 0;
+    drawCount = 0;
+    timerSpeed = 15624;  
+    showResult(ENNATYS);
+ 
+    alku = true;
+    initializeLeds();   // Resetoi LEDit
+    initializeDisplay();
+    initializeTimer();
+}  
 
 void moreSpeed() {
     timerSpeed = timerSpeed * 0.9;  // Nopeutetaan timeria
