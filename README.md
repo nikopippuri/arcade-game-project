@@ -64,19 +64,20 @@ The game saves alltime highscores to EEPROM memory and it will be displayed in t
 ## Folder Structure
 speden-spelit-r2/
 ├── Images/
-│   ├── circuit_diagram.pdf         
-│   ├── circuit_tinkercad.png      
-│   └── flowchart.png               
-├── Koodit/SpedenSpelit
-│   ├── SpedenSpelit.h              
-│   ├── SpedenSpelit.ino           // GameLogic
-│   ├── buttons.cpp                // Buttons
-│   ├── buttons.h                   
-│   ├── display.cpp                // Displays
-│   ├── display.h                   
-│   ├── leds.cpp                   // LEDS
-│   └── leds.h                      
-└── README.md                      // README
+│   ├── circuit_diagram.pdf         # Circuit diagram in PDF format
+│   ├── circuit_tinkercad.png       # Circuit diagram in Tinkercad
+│   └── flowchart.png                # Flowchart of the game logic
+├── Koodit/SpedenSpelit/
+│   ├── SpedenSpelit.h               # Game logic header file
+│   ├── SpedenSpelit.ino             # Main game file
+│   ├── buttons.cpp                   # Button control logic
+│   ├── buttons.h                     # Button header file
+│   ├── display.cpp                   # Display control logic
+│   ├── display.h                     # Display header file
+│   ├── leds.cpp                      # LED control logic
+│   └── leds.h                       # LED header file
+└── README.md                        # README file
+
 
 ## Circuit Diagrams
 
