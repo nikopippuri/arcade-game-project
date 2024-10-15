@@ -34,6 +34,10 @@ void setup() {
     Serial.begin(9600);  // Käynnistä sarjaviestintä 9600 nopeudella
     
     ENNATYS = EEPROM.read(eepromOsoite);     // Ennatys
+    if (ENNATYS == 255) {
+       EEPROM.write(eepromOsoite, 0);
+    }
+
     Serial.print("Eepromi: ");
     Serial.println(ENNATYS);
 
