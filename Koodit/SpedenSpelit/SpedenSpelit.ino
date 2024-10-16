@@ -53,6 +53,7 @@ void setup() {
 void loop() {
 
  if (START == true ) {  // Peli odottaa 
+  showResult(ENNATYS);    
   setLed(0);
   setLed(1);
   setLed(2);
