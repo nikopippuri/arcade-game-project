@@ -5,13 +5,9 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-// Funktioprototyypit
-void initializeTimer();                   // Timerin alustus
-void initializeGame();                    // Pelin alustus
-void startTheGame();                      // Pelin käynnistys
-void checkTheGame(byte lastButtonPress);  // Tarkistetaan pelaajan syöte
-void stopTheGame();                       // Pysäytetään peli
-void resetTheGame();                      // Resetoidaan peli
-void moreSpeed();                         // Pelinopeuden kasvatus
+// Määritellään pelin tilan ja muiden komponenttien toiminnot, jotka tarvitaan pääohjelmassa
+
+void setup();
+void loop();
 
 #endif

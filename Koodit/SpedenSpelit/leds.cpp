@@ -49,7 +49,7 @@ void clearAllLeds(void) {
 };
 
 
-void setAllLeds(void) {
+void setAllLedsOn(void) {
   for(int i=2; i<=5; i++){
     digitalWrite(i, HIGH);
   }
@@ -136,7 +136,7 @@ void show1(void){
   delay(500);
 
   clearAllLeds();
-  setAllLeds(); // kaikki palaa = 15
+  setAllLedsOn(); // kaikki palaa = 15
   delay(500);
 
 };
