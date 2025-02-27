@@ -35,9 +35,12 @@ void loop() {
         setAllLedsOn();  // Sytytetään kaikki LEDit, peli odottaa aloitusta
 
         if (gameState.buttonNumber >= 0) {
-            gameState.isGameWaitingToStart = false;  // Peli voi alkaa
+            Serial.println("Aloituspainike painettu, peli alkaa!");
+            gameState.isGameWaitingToStart = false;
+            gameState.isGameStartDelayed = true;
         }
-    } else if (gameState.buttonNumber >= 0 && !gameState.isGameWaitingToStart) {
+    } 
+    else if (gameState.buttonNumber >= 0 && !gameState.isGameWaitingToStart) {
         if (gameState.isGameStartDelayed) {
             Serial.println("Peli alkaa hetken kuluttua...");
             delay(2000);

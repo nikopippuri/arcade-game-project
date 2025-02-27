@@ -24,6 +24,8 @@ void GameState::reset() {
 // Aloita peli
 void GameState::start() {
     reset();  // Alustetaan peli
+    isGameRunning = true;  // Nyt peli käynnistyy oikein
+    isGameWaitingToStart = false;
     Serial.println("Peli aloitettu!");
 }
 
